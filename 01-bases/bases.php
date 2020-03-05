@@ -19,6 +19,7 @@
 </style>
 
 <?php
+require_once 'functions.php';
 //--------------------------------
 echo '<h2>Les balises PHP</h2>';
 //--------------------------------
@@ -699,12 +700,7 @@ foreach($tab_multi as $indice => $valeur){
 
 // Exercice bonus : vous déclarez un tableau avec les tailles S, M, L et XL. Puis vous affichez les tailles dans un menu déroulant avec une boucle foreach.
 
-$tailles = array (
-    0 => 'S',
-    1 => 'M',
-    2 => 'L',
-    3 => 'XL',
-);
+$tailles = array ('S', 'M', 'L', 'XL');
 
 ?>
 <select>
@@ -717,10 +713,39 @@ $tailles = array (
 
 
 <select>
-<?php
-
-foreach($tailles as $i => $valeur){
-    echo '<option>' . $tailles[$i] . '</option>';
-}
-?>
+    <?php
+        foreach($tailles as $valeur){
+            echo '<option>' . $valeur . '</option>';
+        }
+    ?>
 </select>
+
+
+
+<?php
+//-----------------------------------------------------
+echo '<h2> Inclusion de fichiers </h2>';
+//-----------------------------------------------------
+
+echo 'Première inclusion : ';
+include 'exemple.inc.php'; // permet de faire l'inclusion du fichier dont le chemin est spécifié. En cas d'erreur lors de l'inclusion, include génére un warning et continue l'execution du script. 
+
+echo '<br>';
+
+echo 'Deuxième inclusion : ';
+include_once 'exemple.inc.php'; // permet de faire l'inclusion du fichier une seule fois, et seulement si celui-ci n'a pas encore été inclus.
+
+echo '<br>';
+
+echo 'Troisième inclusion : ';
+require 'exemple.inc.php'; // fait l'inclusion du fichier spécifié.Celui-ci est obligatoire au bon fonctionnement du site : en cas d'erreur lors de l'inclusion, require génère une erreur de type "fatal error" et stoppe l'execution du script. 
+
+echo '<br>';
+
+echo 'Quatrième inclusion : ';
+require_once 'exemple.inc.php'; // "once" signifie que l'on vérifie si le fichier a déjà été inclus. Si c'est le cas, on ne le ré-inclut pas.
+
+// Le ".inc" dans le nom du fichier est un indicatif pour préciser aux développeurs que le fichier est destiné à être inclus, et qu'il ne s'agit pas d'une page à part entière.
+
+bonjourKiki();
+
