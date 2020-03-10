@@ -749,3 +749,27 @@ require_once 'exemple.inc.php'; // "once" signifie que l'on vérifie si le fichi
 
 bonjourKiki();
 
+//---------------------------------------------------
+echo '<h2>Introduction aux objets</h2>';
+//---------------------------------------------------
+
+// Un objet est un autre type de données (object en anglais). Il représente un objet réel (par exemple une voiture, un personnage de jeu vidéo, un membre inscrit à votre site, un produit que vous vendez, un panier d'achat...) auquel on peut associer des variables, appelées propriétés, et des fonctions appelées méthodes.
+
+// Pour créer des objets il nous faut un plan de construction : c'est le rôle de la classe (class en anglais). Nous créons ici une classe pour fabriquer des meubles :
+
+class Meuble {  // on met une majuscule à la 1ère lettre du nom de la classe 
+    public $marque = 'ikea';   // propriété "marque". Public permet de préciser que l'élément sera accessible partout.
+
+    public function prix() {
+        return rand(50,200) . '€' ;  // rand() est une fonction prédéfinie qui tire un chiffre aléatoire ici entre 50 et 200.
+    }
+}
+
+// On crée une table à partir de la classe Meuble : 
+$table = new Meuble();  // On crée un objet $table à partir de la classe Meuble à l'aide du mot clé "new". On dit que l'on instancie la classe. $table est donc de type objet.
+
+debug($table);  // On voit le type object et la seule propriété "marque"
+
+echo 'La marque de notre table est : ' . $table->marque . '<br>';   // Pour accéder à la propriété d'un objet, on écrit l'objet suivi de la flèche "->" puis du nom de la propriété SANS le "$".
+echo 'Le prix de notre table est de :  ' . $table->prix() . '<br>'; // Pour exécuter la méthode d'un objet, on écrit son nom après la flèche "->" et on lui ajoute une paire de ().
+
