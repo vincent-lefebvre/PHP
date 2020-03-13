@@ -1,5 +1,6 @@
 <?php
 require_once 'inc/init.php';
+
 $message = '';
 
 // 2. Déconnexion de l'internaute : 

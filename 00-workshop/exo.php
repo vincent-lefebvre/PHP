@@ -1,3 +1,23 @@
+<?php
+
+$pdo = new PDO('mysql:host=localhost;dbname=exo_contacts',  // driver mysql (IBM, Oracle, ODBC...), nom du serveur (host), nom de la BDD (dbname)
+                'root',     // pseudo de la BDD
+                '',         // mdp de la BDD
+                array(
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING,          // pour afficher les erreurs SQL dans le navigateur
+                    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',   // pour définir le charset des échanges avec la BDD
+                ));
+
+// Fonction de debug
+function debug($var) {
+    echo '<pre>';
+        print_r($var);
+    echo '</pre>';
+}
+
+debug($pdo);
+?>
+
 <!doctype html>
 <html lang="fr">
   <head>
@@ -19,7 +39,7 @@
 
     <section class="container">
 
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-md-12">
                 <form>
                     <div class="form-row">
@@ -71,14 +91,14 @@
                 </form>
             
             </div>
-        </div>  <!-- fin row -->
+        </div>  fin row -->
 
         <br>
 
         <div class="row">   <!--début tableau -->
             <div class="col-md-12">
                 <div class="table-responsive-sm">
-                    <table class="table">
+                    <table class="table table-striped table-dark">
                         <thead>
                             <tr>
                             <th scope="col">id contact</th>
