@@ -1,6 +1,94 @@
 <?php
 require_once 'inc/init.php';
 
+// Traitement du formulaire : 
+// debug($_POST);
+
+if(!empty($_POST)) {    // si le formulaire a été envoyé, $_POST n'est pas vide
+
+    // Validation du formulaire : 
+    if (!isset($_POST['pseudo']) || strlen($_POST['pseudo']) < 4 || strlen($_POST['pseudo']) > 20) {    
+            // si n'existe pas l'indice pseudo dans $_POST c'est que le formulaire a été modifié. Si la longueur du pseudo est inférieure à 4 ou supérieure à 20, on envoie un message d'erreur à l'internaute.
+        $contenu .= '<div class="alert alert-danger">Le pseudo doit contenir entre 4 et 20 caractères.</div>';
+    }
+
+    if (!isset($_POST['mdp']) || strlen($_POST['mdp']) < 4 || strlen($_POST['mdp']) > 20) {    
+    $contenu .= '<div class="alert alert-danger">Le mot de passe doit contenir entre 4 et 20 caractères.</div>';
+    }
+
+    if (!isset($_POST['nom']) || strlen($_POST['nom']) < 2 || strlen($_POST['nom']) > 20) {    
+        $contenu .= '<div class="alert alert-danger">Le nom doit contenir entre 2 et 20 caractères.</div>';
+    }
+
+    if (!isset($_POST['prenom']) || strlen($_POST['prenom']) < 2 || strlen($_POST['prenom']) > 20) {    
+        $contenu .= '<div class="alert alert-danger">Le prénom doit contenir entre 2 et 20 caractères.</div>';
+    }
+
+    if (!isset($_POST['email']) || strlen($_POST['email']) > 50 || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {    
+            // La fonction filter_var() retourne true si $_POST['email'] est bien de format email, sinon elle retourne false (ici on met un "!" pour NOT car on veut vérifier qu'il NE s'agit PAS d'un email).
+        $contenu .= '<div class="alert alert-danger">L\'email n\'est pas valide.</div>';
+    }
+
+    if (!isset($_POST['civilite']) || ($_POST['civilite'] != 'm' && $_POST['civilite'] != 'f')) {
+        $contenu .= '<div class="alert alert-danger">L\'email n\'est pas valide.</div>';
+    }
+
+    if (!isset($_POST['ville']) || strlen($_POST['ville']) < 1 || strlen($_POST['ville']) > 20) {    
+        $contenu .= '<div class="alert alert-danger">La ville doit contenir entre 1 et 20 caractères.</div>';
+    }
+
+    if (!isset($_POST['code_postal']) || !preg_match('#^[0-9]{5}$#', $_POST['code_postal'])) {    
+        $contenu .= '<div class="alert alert-danger">Le code postal n\'est pas valide.</div>';
+    }   // preg_match vérifie si le code postal correspond à l'expression régulière précisée.
+
+    /*
+        La regex s'écrit entre #
+        Le ^ définit le début de l'expression
+        Le $ définit la fin de l'expression
+        [0-9] définit l'intervalle des chiffres autorisés
+        {5} définit que l'on en veut 5 précisément
+    */
+
+    if (!isset($_POST['adresse']) || strlen($_POST['adresse']) < 2 || strlen($_POST['adresse']) > 50) {    
+        $contenu .= '<div class="alert alert-danger">L\'adresse n\'est pas valide.</div>';
+    }
+
+    // S'il n'y a pas d'erreur sur le formulaire, on vérifie que le pseudo est disponible puis on insère le membre en BDD :
+
+    if (empty($contenu)) {  // si la variable est vide, c'est qu'il n'y a pas d'erreur sur le formulaire 
+
+        // On sélectionne le pseudo en BDD :
+        $membre = executeRequete("SELECT * FROM membre WHERE pseudo = :pseudo", array(':pseudo' => $_POST['pseudo']));
+
+        if ($membre->rowCount() > 0) {  // si la requête retourne des lignes c'est que le pseudo existe déjà.
+            $contenu .= '<div class="alert alert-danger">Le pseudo est indisponible. Veuillez en choisir un autre.</div>';
+        } else {
+            $mdp = password_hash($_POST['mdp'], PASSWORD_DEFAULT); // Cette fonction prédéfinie permet de hascher le mot de passe selon l'algorithme actuel "bcrypt". Il faudra lors de la connexion comparer le hash de la BDD avec celui du mdp de l'internaute.
+
+            $succes = executeRequete("INSERT INTO membre (pseudo, mdp, nom, prenom, email, civilite, ville, code_postal, adresse, statut) VALUES (:pseudo, :mdp, :nom, :prenom, :email, :civilite, :ville, :code_postal, :adresse, 0)", array(
+                ':pseudo'       => $_POST['pseudo'],
+                ':mdp'          => $mdp,  // on prend le mdp hasher
+                ':nom'          => $_POST['nom'],
+                ':prenom'       => $_POST['prenom'],
+                ':email'        => $_POST['email'],
+                ':civilite'     => $_POST['civilite'],
+                ':ville'        => $_POST['ville'],
+                ':code_postal'  => $_POST['code_postal'],
+                ':adresse'      => $_POST['adresse'],
+            ));
+
+            if ($succes) {
+                $contenu .= '<div class="alert alert-success">Vous êtes inscrit. <a href="connexion.php">Cliquez ici pour vous connecter.</a></div>';
+            } else {
+                $contenu .= '<div class="alert alert-danger">Erreur lors de l\'enregistrement. Veuillez réessayez ultérieurement.</div>';
+            }
+
+        }
+
+    } // fin du if (empty($contenu))
+
+} // fin du if(!empty($_POST))
+
 
 require_once 'inc/header.php';
 ?>
